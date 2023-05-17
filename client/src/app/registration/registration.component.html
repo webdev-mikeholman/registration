@@ -1,0 +1,62 @@
+<div class="register-container">
+	<form [formGroup]="registerForm" class="register-content" (ngSubmit)="onSubmit()">
+		<h2 class="title">Registration</h2>
+		<h3 class="message">So glad you decided to join!</h3>
+		<mat-form-field appearance="outline">
+			<mat-label>First Name</mat-label>
+			<input formControlName="firstName" matInput="firstName" type="text">
+			<mat-error *ngIf="registerForm.controls['firstName'].hasError('required')">
+				First name is required
+			</mat-error>
+		</mat-form-field>
+		<mat-form-field appearance="outline">
+			<mat-label>Last Name</mat-label>
+			<input formControlName="lastName" matInput="lastName" type="text">
+			<mat-error *ngIf="registerForm.controls['lastName'].hasError('required')">
+				Last name is required
+			</mat-error>
+		</mat-form-field>
+		<mat-form-field appearance="outline">
+			<mat-label>Email</mat-label>
+			<input formControlName="email" matInput="email" type="text">
+			<mat-error *ngIf="registerForm.controls['email'].hasError('required')">
+				Email is required
+			</mat-error>
+			<mat-error *ngIf="registerForm.controls['email'].hasError('email')">
+				Email is not valid
+			</mat-error>
+		</mat-form-field>
+		<mat-form-field appearance="outline">
+			<mat-label>Password</mat-label>
+			<input formControlName="password" matInput="password" type="{{hiddenPassword ? 'password' : 'text'}}">
+			<mat-icon (click)="hiddenPassword = !hiddenPassword" matSuffix>{{hiddenPassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+			<mat-error *ngIf="registerForm.controls['password'].hasError('required')">
+				Password is required
+			</mat-error>
+			<mat-error *ngIf="registerForm.controls['password'].hasError('minlength')">
+				Password must be at least 6 characters
+			</mat-error>
+			<mat-error *ngIf="registerForm.controls['password'].hasError('maxlength')">
+				Password must be less than 20 characters
+			</mat-error>
+		</mat-form-field>
+		<mat-form-field appearance="outline">
+			<mat-label>Confirm Password</mat-label>
+			<input formControlName="confirmPassword" matInput="confirmPassword" type="{{hiddenConfirmPassword ? 'password' : 'text'}}">
+			<mat-icon (click)="hiddenConfirmPassword = !hiddenConfirmPassword" matSuffix>{{hiddenConfirmPassword ? 'visibility_off' : 'visibility'}}</mat-icon>
+			<mat-error *ngIf="registerForm.controls['confirmPassword'].hasError('required')">
+				Confirm Password is required
+			</mat-error>
+			<mat-error *ngIf="registerForm.controls['confirmPassword'].hasError('minlength')">
+				Confirm Password must be at least 6 characters
+			</mat-error>
+			<mat-error *ngIf="registerForm.controls['confirmPassword'].hasError('maxlength')">
+				Confirm Password must be less than 20 characters
+			</mat-error>
+		</mat-form-field>
+		<button mat-stroked-button (click)='NodeChosen()'>Submit with Node</button> <button mat-stroked-button (click)='PhpChosen()'>Submit with PHP</button>
+		<mat-error *ngIf="registerForm.errors?.['passwordMatchError']">
+			Passwords do not match
+		</mat-error>
+	</form>
+</div>

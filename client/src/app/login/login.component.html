@@ -1,0 +1,32 @@
+<div class="login-container">
+	<form [formGroup]="loginForm" class="login-content" (ngSubmit)="onSubmit()">
+		<h2 class="title">Login</h2>
+		<h3 class="message">Welcome back!</h3>
+		<mat-form-field appearance="outline">
+			<mat-label>Username</mat-label>
+			<input formControlName="username" matInput="username" type="text">
+			<mat-error *ngIf="loginForm.controls['username'].hasError('required')">
+				Username is required
+			</mat-error>
+			<mat-error *ngIf="loginForm.controls['username'].hasError('email')">
+				Not a valid email address
+			</mat-error>
+		</mat-form-field>
+		<mat-form-field appearance="outline">
+			<mat-label>Password</mat-label>
+			<input formControlName="password" matInput="password" type="{{hidden ? 'password' : 'text'}}">
+			<mat-icon (click)="hidden = !hidden" matSuffix>{{hidden ? 'visibility_off' : 'visibility'}}</mat-icon>
+			<mat-error *ngIf="loginForm.controls['password'].hasError('required')">
+				Password is required
+			</mat-error>
+		</mat-form-field>
+		<button mat-stroked-button>Login</button>
+		<br>
+
+		<p class="forgot-label">Forgot Password</p>
+
+		<p class="signup">Don't have an account? <span [routerLink]="['/register']">Sign-up</span></p>
+
+
+	</form>
+</div>
