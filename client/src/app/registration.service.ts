@@ -7,12 +7,22 @@ import { Observable } from 'rxjs';
 })
 export class RegistrationService {
   constructor(private http: HttpClient) {}
+  phpURL: string = 'http://localhost:8000';
+  nodeURL: string = 'http://localhost:3001';
 
   submitNodeRegistration(data: any): Observable<any> {
-    return this.http.post('http://localhost:3001/auth/register', data);
+    return this.http.post(`${this.nodeURL}/auth/register1`, data);
   }
 
   submitPhpRegistration(data: any): Observable<any> {
-    return this.http.post('http://localhost:8000/users', data);
+    return this.http.post(`${this.phpURL}/users`, data);
+  }
+
+  nodeLogin(data: any): Observable<any> {
+    return this.http.post(`${this.nodeURL}/auth/login`, data);
+  }
+
+  phpLogin(data: any): Observable<any> {
+    return this.http.post(`${this.phpURL}/login`, data);
   }
 }

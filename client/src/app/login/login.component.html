@@ -4,11 +4,11 @@
 		<h3 class="message">Welcome back!</h3>
 		<mat-form-field appearance="outline">
 			<mat-label>Username</mat-label>
-			<input formControlName="username" matInput="username" type="text">
-			<mat-error *ngIf="loginForm.controls['username'].hasError('required')">
+			<input formControlName="email" matInput="email" type="text">
+			<mat-error *ngIf="loginForm.controls['email'].hasError('required')">
 				Username is required
 			</mat-error>
-			<mat-error *ngIf="loginForm.controls['username'].hasError('email')">
+			<mat-error *ngIf="loginForm.controls['email'].hasError('email')">
 				Not a valid email address
 			</mat-error>
 		</mat-form-field>
