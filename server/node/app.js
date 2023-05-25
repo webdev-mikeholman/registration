@@ -3,6 +3,7 @@ const cors = require('cors')
 const port = 3001
 const app = express()
 const auth = require('./routes/auth-route')
+const formFields = require('./routes/form-fields')
 const mongoose = require('mongoose')
 const dotenv = require('dotenv')
 
@@ -23,9 +24,11 @@ app.use(express.json())
 
 // Connect to model
 app.use('/auth', auth)
+app.use('/formFields', formFields)
 
 // Generic landing page
 app.get('/', (req, res) => res.status(200).send('Welcome'))
+
 
 
 app.listen(port, () => {

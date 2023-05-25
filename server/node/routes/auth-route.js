@@ -27,7 +27,6 @@ router.post('/register', async (req, res) => {
 
 // Verify existing user
 router.post('/login', async (req, res) => {
-	let validUser = false;
 	const data = req.body
 
 	try {

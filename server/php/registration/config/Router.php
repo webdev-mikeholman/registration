@@ -10,10 +10,16 @@ class Router {
 		}
 		$root = '';
 		$pattern = '#^'.$root.$path.'$#siD';
+ 
+		$currentUri = str_replace('/public', '', $currentUri);
+				
 		if (preg_match($pattern,$currentUri)) {
 			if (is_callable($controller)) {
 				$controller();
+			} elseif(substr_compare($controller, 'Documents', 0) === 0) {
+				include ('../documents/'.$action.'.php');
 			} else {
+				
 				require_once '../controller/'.$controller.'.php';
 				$controller = new $controller();
 				$controller->$action();

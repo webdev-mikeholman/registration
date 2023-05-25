@@ -2,58 +2,104 @@
 require_once '../config/Controller.php';
 require_once '../model/UserModel.php';
 
+/**
+ * @OA\Info(title="PDO PHP REST", version="1.0")
+ * 		@OA\SecurityScheme(
+ * 			type="http",
+ * 			description="Authorization with JWT authentication",
+ * 			name="Authorization",
+ * 			in="header",
+ * 			scheme="bearer",
+ *			bearerFormat="JWT",
+ *			securityScheme="bearerToken",
+ * 		)
+ */
+
 class UserController extends Controller {
 	private $pdo;
+	private $isValidUser;
 
 	public function __construct() {
 		$this->pdo = new PDO('mysql:host=localhost;dbname=registration', 'tester', 'ImaTester!!');
+		$this->isValidUser = !$this->tokenExpired() && isset($_SESSION['validUser']) ? true : false;
 	}
-
 		
 	/**
-	 * validateUser - Checks to see if the user's email and password are correct
-	 *
-	 * @return array $validUserResponse
+	 * @OA\Get(
+	 * 		path="/allUsers",
+	 * 		summary="Gets all users",
+	 * 		tags={"Users"},
+	 * 		@OA\Response(response="200", description="Get all users"),
+	 * 		security={ {"bearerToken": {}}}
+	 * )
 	 */
-	public function validateUser() {
-		$validPassword = false;
-		$data = json_decode(file_get_contents('php://input'), true);
-		$user = new User($this->pdo);
-		$validUserResponse = $user->get($data['email']);
-		if (isset($validUserResponse)) {
-			$validPassword = $this->validatePassword($data['password'], $validUserResponse->password);
-		}
-		die(json_encode(['success'=> $validPassword]));
-	}
-
 		
-	/**
-	 * showUsers - Retrieves all users in the database
-	 *
-	 * @return array $validUserResponse
-	 */
 	public function showUsers() {
-		$user = new User($this->pdo);
-		$validUserResponse = $user->getAll();		
-		return $this->view($validUserResponse);
+		try {
+			if ($this->isValidUser) {
+			$user = new User($this->pdo);
+			$validUserResponse = $user->getAll();		
+			die(json_encode($validUserResponse));
+			} else {
+				session_destroy();
+				http_response_code(401);
+				die(json_encode(['success'=> 'false', 'message' => 'Invalid user']));
+			}
+		} catch (Exception $e) {
+			die($e->getMessage());
+		}
 	}
 	
 	/**
-	 * addUser - Adds a user to the database if the email does not already exist
-	 *
-	 * @return array $response
+	 * @OA\Post(
+	 * 		path="/newUser",
+	 * 		summary="Adds new user",
+	 * 		tags={"Users"},
+	 * 		@OA\RequestBody(
+	 * 			@OA\MediaType(
+	 * 				mediaType="application/json",
+	 * 				@OA\Schema(
+	 * 					@OA\Property(
+	 * 						property="firstName",
+	 * 						type="string",
+	 * 					),
+	 * 					@OA\Property(
+	 * 						property="lastName",
+	 * 						type="string",
+	 * 					),
+	 * 					@OA\Property(
+	 * 						property="email",
+	 * 						type="string",
+	 * 					),
+	 * 					@OA\Property(
+	 * 						property="password",
+	 * 						type="string",
+	 * 					),
+	 * 				),
+	 * 			),
+	 * 		),
+	 * 		@OA\Response(response="200", description="Success"),
+	 * 		@OA\Response(response="403", description="Forbidden"),
+	 * 		security={ {"bearerToken": {}}}
+	 * )
 	 */
 	public function addUser() {
 		try {
-			$data = $this->encryptPassword(json_decode(file_get_contents('php://input'), true));
-			$user = new User($this->pdo);
-			$addUserResponse = $user->add($data);
-			if ($addUserResponse) {
-				$response = json_encode(['success'=>true, 'message'=>'Success']);
+			if ($this->isValidUser) {
+				$data = $this->encryptPassword(json_decode(file_get_contents('php://input'), true));
+				$user = new User($this->pdo);
+				$addUserResponse = $user->add($data);
+				if ($addUserResponse) {
+					$response = json_encode(['success'=>true, 'message'=>'Success']);
+				} else {
+					$response = json_encode(['success'=>false, 'message'=>'Unable to add user']);				
+				}
+				die($response);
 			} else {
-				$response = json_encode(['success'=>false, 'message'=>'Unable to add user']);				
+				session_destroy();
+				http_response_code(401);
+				die(json_encode(['success'=> 'false', 'message' => 'Invalid user']));
 			}
-			die($response);
 		} catch (Exception $e) {
 			header('Content-Type: application/json');
 			http_response_code(403);
@@ -80,17 +126,6 @@ class UserController extends Controller {
 			}
 		}
 		return $newData;
-	}
-
-	/**
-	 * validatePassword - Checks to see if a password is valid
-	 *
-	 * @param $attemptedPassword, $savedPassword
-	 *
-	 * @return boolean
-	 */
-	private function validatePassword($attemptedPassword, $savedPassword) {
-		return password_verify($attemptedPassword, $savedPassword);
 	}
 
 }
