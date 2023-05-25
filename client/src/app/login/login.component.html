@@ -2,25 +2,36 @@
 	<form [formGroup]="loginForm" class="login-content" (ngSubmit)="onSubmit()">
 		<h2 class="title">Login</h2>
 		<h3 class="message">Welcome back!</h3>
-		<mat-form-field appearance="outline">
-			<mat-label>Username</mat-label>
-			<input formControlName="email" matInput="email" type="text">
-			<mat-error *ngIf="loginForm.controls['email'].hasError('required')">
-				Username is required
-			</mat-error>
-			<mat-error *ngIf="loginForm.controls['email'].hasError('email')">
-				Not a valid email address
-			</mat-error>
-		</mat-form-field>
-		<mat-form-field appearance="outline">
-			<mat-label>Password</mat-label>
-			<input formControlName="password" matInput="password" type="{{hidden ? 'password' : 'text'}}">
-			<mat-icon (click)="hidden = !hidden" matSuffix>{{hidden ? 'visibility_off' : 'visibility'}}</mat-icon>
-			<mat-error *ngIf="loginForm.controls['password'].hasError('required')">
-				Password is required
-			</mat-error>
-		</mat-form-field>
-		<button mat-stroked-button>Login</button>
+		<ng-container *ngFor="let fields of formFields; let i = index">
+			<ng-container *ngIf="fields.active">
+				<mat-form-field appearance="outline" *ngIf="fields.type === 'text' || fields.type === 'password'">
+					<mat-label>{{fields.fieldDisplay}}</mat-label>
+					<ng-container *ngIf="i === 0">
+						<input #firstItem formControlName="{{fields.fieldTitle}}" matInput type="{{fields.type}}" required="{{fields.required}}">
+					</ng-container>
+					<ng-container *ngIf="i !== 0 && fields.type === 'password'">
+						<div class="alignEye">
+							<input formControlName="{{fields.fieldTitle}}" matInput [type]="hidden ? fields.type : fields.type2" required="{{fields.required}}">
+							<mat-icon (click)="hidden = !hidden" matSuffix>{{hidden ? 'visibility_off' : 'visibility'}}</mat-icon>
+						</div>
+					</ng-container>
+				</mat-form-field>
+			</ng-container>
+		</ng-container>
+		<ng-container *ngIf="formFieldErrors.length > 0">
+			<ng-container *ngFor="let error of formFieldErrors">
+				<mat-error>
+					{{error}}
+				</mat-error>
+			</ng-container>
+			<br>
+		</ng-container>
+
+		<div *ngFor="let fields of formFields">
+			<div *ngIf="fields.type==='button'">
+				<button mat-stroked-button>{{fields.fieldDisplay}}</button>
+			</div>
+		</div>
 		<br>
 
 		<p class="forgot-label">Forgot Password</p>
