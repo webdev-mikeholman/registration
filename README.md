@@ -4,9 +4,11 @@ This is a test project with Angular 16 on the front end and both Node.js and PHP
 
 To start the backend:
 
-Node: Run `node` or `nodemon`.
+Node: In server\node Run `node` or `nodemon`.
 
-PHP: Run `php -S localhost:8000`.
+PHP: In server\php\registration\public Run `php -S localhost:8000`.
+
+To see the current PHP API documentation, after starting the PHP server, go to `http://localhost:8000/documents/index.php`
 
 ## Development server
 

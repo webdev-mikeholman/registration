@@ -12,9 +12,10 @@ import { AppComponent } from './app.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { LoginComponent } from './login/login.component';
 import { RegistrationComponent } from './registration/registration.component';
+import { UserlistComponent } from './userlist/userlist.component';
 
 @NgModule({
-  declarations: [AppComponent, LoginComponent, RegistrationComponent],
+  declarations: [AppComponent, LoginComponent, RegistrationComponent, UserlistComponent],
   imports: [
     BrowserModule,
     AppRoutingModule,

@@ -8,7 +8,9 @@ const userSchema = new Schema({
 	lastName: {type: String},
 	email: {type: String, unique: true},
 	password: {type: String, required: true},
-	created_on: {type: Number, default: Date.now().valueOf()},
+	created_on: {type: Date, default: Date.now()},
+	is_super_user: {type: Boolean, default: false},
+	is_admin: {type: Boolean, default: false},
 })
 
 module.exports = mongoose.model('User', userSchema)

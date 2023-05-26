@@ -26,10 +26,22 @@ router.post('/register', async (req, res) => {
 })
 
 // Verify existing user
-router.post('/login', (req, res) => {
+router.post('/login', async (req, res) => {
 	const data = req.body
 
-	const passwordsMatch = bcrypt.compareSync(data.password, hash);
+	try {
+		const response = await User.findOne({email: data.email})
+		const passwordsMatch = bcrypt.compareSync(data.password, response.password);
+		if (passwordsMatch) {
+			res.json({success: true, message: 'Successfully Logged in'})
+		}
+		else {
+			res.json({success: false, message: 'Logged in failed'})
+		}
+	}
+	catch (err) {
+		res.status(401).send('Authentication failed')
+	}
 })
 
 module.exports = router

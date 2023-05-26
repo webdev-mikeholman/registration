@@ -1,3 +1,3 @@
 <?php
-	return json_encode(['success'=>true, 'message'=>'Success']);
+	die(json_encode(['success'=>true, 'message'=>'Success']));
 ?>
